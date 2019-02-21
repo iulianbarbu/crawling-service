@@ -1,0 +1,15 @@
+conf/*.txt
+conf/*.xml
+conf/hadoop-env.sh
+conf/slaves
+build/
+runtime/
+logs/
+/bin/
+.classpath
+.naivebayes-model.crc
+.project
+ivy/ivy-2.3.0.jar
+ivy/ivy-2.4.0.jar
+ivy/ivy-2.5.0-rc1.jar
+naivebayes-model
