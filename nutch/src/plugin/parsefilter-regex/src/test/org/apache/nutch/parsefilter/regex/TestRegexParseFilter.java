@@ -16,6 +16,8 @@
  */
 package org.apache.nutch.parsefilter.regex;
 
+import java.net.MalformedURLException;
+
 import org.apache.hadoop.conf.Configuration;
 import org.apache.nutch.metadata.Metadata;
 import org.apache.nutch.parse.Parse;

@@ -21,13 +21,18 @@ import java.lang.invoke.MethodHandles;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import org.apache.hadoop.conf.Configuration;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import org.apache.hadoop.conf.Configuration;
+import org.apache.oro.text.regex.MatchResult;
+import org.apache.oro.text.regex.Pattern;
+import org.apache.oro.text.regex.PatternCompiler;
+import org.apache.oro.text.regex.PatternMatcher;
+import org.apache.oro.text.regex.PatternMatcherInput;
+import org.apache.oro.text.regex.Perl5Compiler;
+import org.apache.oro.text.regex.Perl5Matcher;
 
 /**
  * Extractor to extract {@link org.apache.nutch.parse.Outlink}s / URLs from
@@ -55,8 +60,7 @@ public class OutlinkExtractor {
 
    *      </a>
    */
-  private static final Pattern URL_PATTERN = Pattern.compile(
-      "([A-Za-z][A-Za-z0-9+.-]{1,120}:[A-Za-z0-9/](([A-Za-z0-9$_.+!*,;/?:@&~=-])|%[A-Fa-f0-9]{2}){1,333}(#([a-zA-Z0-9][a-zA-Z0-9$_.+!*,;/?:@&~=%-]{0,1000}))?)");
+  private static final String URL_PATTERN = "([A-Za-z][A-Za-z0-9+.-]{1,120}:[A-Za-z0-9/](([A-Za-z0-9$_.+!*,;/?:@&~=-])|%[A-Fa-f0-9]{2}){1,333}(#([a-zA-Z0-9][a-zA-Z0-9$_.+!*,;/?:@&~=%-]{0,1000}))?)";
 
   /**
    * Extracts <code>Outlink</code> from given plain text. Applying this method
@@ -68,8 +72,7 @@ public class OutlinkExtractor {
    * 
    * @return Array of <code>Outlink</code>s within found in plainText
    */
-  public static Outlink[] getOutlinks(final String plainText,
-      Configuration conf) {
+  public static Outlink[] getOutlinks(final String plainText, Configuration conf) {
     return OutlinkExtractor.getOutlinks(plainText, "", conf);
   }
 
@@ -86,20 +89,23 @@ public class OutlinkExtractor {
    */
   public static Outlink[] getOutlinks(final String plainText, String anchor,
       Configuration conf) {
-
-    if (plainText == null) {
-      return new Outlink[0];
-    }
-
     long start = System.currentTimeMillis();
     final List<Outlink> outlinks = new ArrayList<>();
 
     try {
-      Matcher matcher = URL_PATTERN.matcher(plainText);
+      final PatternCompiler cp = new Perl5Compiler();
+      final Pattern pattern = cp.compile(URL_PATTERN,
+          Perl5Compiler.CASE_INSENSITIVE_MASK | Perl5Compiler.READ_ONLY_MASK
+              | Perl5Compiler.MULTILINE_MASK);
+      final PatternMatcher matcher = new Perl5Matcher();
+
+      final PatternMatcherInput input = new PatternMatcherInput(plainText);
+
+      MatchResult result;
       String url;
 
-      // Check for stuff!
-      while (matcher.find()) {
+      // loop the matches
+      while (matcher.contains(input, pattern)) {
         // if this is taking too long, stop matching
         // (SHOULD really check cpu time used so that heavily loaded systems
         // do not unnecessarily hit this limit.)
@@ -109,9 +115,8 @@ public class OutlinkExtractor {
           }
           break;
         }
-
-        url = matcher.group().trim();
-
+        result = matcher.getMatch();
+        url = result.group(0);
         try {
           outlinks.add(new Outlink(url, anchor));
         } catch (MalformedURLException mue) {

@@ -77,9 +77,7 @@ public class CleaningJob implements Tool {
 
   public static class DeleterReducer extends
       Reducer<ByteWritable, Text, Text, ByteWritable> {
-    @SuppressWarnings("unused")
     private static final int NUM_MAX_DELETE_REQUEST = 1000;
-    @SuppressWarnings("unused")
     private int numDeletes = 0;
     private int totalDeleted = 0;
 
@@ -185,6 +183,8 @@ public class CleaningJob implements Tool {
       String usage = "Usage: CleaningJob <crawldb> [-noCommit]";
       LOG.error("Missing crawldb. " + usage);
       System.err.println(usage);
+      IndexWriters writers = IndexWriters.get(getConf());
+      System.err.println(writers.describe());
       return 1;
     }
 

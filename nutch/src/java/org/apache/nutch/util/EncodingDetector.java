@@ -79,12 +79,10 @@ public class EncodingDetector {
       this.confidence = confidence;
     }
 
-    @SuppressWarnings("unused")
     public String getSource() {
       return source;
     }
 
-    @SuppressWarnings("unused")
     public String getValue() {
       return value;
     }
@@ -356,7 +354,6 @@ public class EncodingDetector {
         NutchConfiguration.create());
 
     // do everything as bytes; don't want any conversion
-    @SuppressWarnings("resource")
     BufferedInputStream istr = new BufferedInputStream(new FileInputStream(
         args[0]));
     ByteArrayOutputStream ostr = new ByteArrayOutputStream();

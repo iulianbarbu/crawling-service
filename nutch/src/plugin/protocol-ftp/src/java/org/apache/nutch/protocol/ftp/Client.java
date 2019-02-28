@@ -489,6 +489,7 @@ public class Client extends FTP {
       // ProFTPD [ftp.kernel.org]
       // there is second reply witing? no!
       // getReply();
+    } else if (reply == 451) { // FTPReply.ACTION_ABORTED
     } else {
       // what other kind of ftp server out there?
       return false;

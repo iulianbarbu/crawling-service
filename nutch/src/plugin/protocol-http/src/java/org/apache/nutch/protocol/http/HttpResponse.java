@@ -30,10 +30,8 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocket;
 import javax.net.ssl.SSLSocketFactory;
-import javax.net.ssl.TrustManager;
 
 import org.apache.hadoop.io.Text;
 import org.apache.nutch.crawl.CrawlDatum;
@@ -133,7 +131,7 @@ public class HttpResponse implements Response {
         try {
           sslsocket = getSSLSocket(socket, sockHost, sockPort);
           sslsocket.startHandshake();
-        } catch (Exception e) {
+        } catch (IOException e) {
           Http.LOG.debug("SSL connection to {} failed with: {}", url,
               e.getMessage());
           if ("handshake alert:  unrecognized_name".equals(e.getMessage())) {
@@ -144,7 +142,7 @@ public class HttpResponse implements Response {
               socket.connect(sockAddr, http.getTimeout());
               sslsocket = getSSLSocket(socket, "", sockPort);
               sslsocket.startHandshake();
-            } catch (Exception ex) {
+            } catch (IOException ex) {
               String msg = "SSL reconnect to " + url + " failed with: "
                   + e.getMessage();
               throw new HttpException(msg);
@@ -272,7 +270,7 @@ public class HttpResponse implements Response {
           break;
         }
         if (httpHeaders != null)
-          httpHeaders.append(line).append("\r\n");
+          httpHeaders.append(line).append("\n");
         // parse headers
         parseHeaders(in, line, httpHeaders);
         haveSeenNonContinueStatus = code != 100; // 100 is "Continue"
@@ -297,7 +295,6 @@ public class HttpResponse implements Response {
           // store the headers verbatim only if the response was not compressed
           // as the content length reported does not match otherwise
           if (httpHeaders != null) {
-            httpHeaders.append("\r\n");
             headers.add(Response.RESPONSE_HEADERS, httpHeaders.toString());
           }
           if (Http.LOG.isTraceEnabled()) {
@@ -356,18 +353,9 @@ public class HttpResponse implements Response {
    * -------------------------
    */
 
-  private SSLSocket getSSLSocket(Socket socket, String sockHost, int sockPort)
-      throws Exception {
-    SSLSocketFactory factory;
-    if (http.isTlsCheckCertificates()) {
-      factory = (SSLSocketFactory) SSLSocketFactory.getDefault();
-    } else {
-      SSLContext sslContext = SSLContext.getInstance("TLS");
-      sslContext.init(null,
-          new TrustManager[] { new DummyX509TrustManager(null) }, null);
-      factory = sslContext.getSocketFactory();
-    }
-    
+  private SSLSocket getSSLSocket(Socket socket, String sockHost, int sockPort) throws IOException {
+    SSLSocketFactory factory = (SSLSocketFactory) SSLSocketFactory
+      .getDefault();
     SSLSocket sslsocket = (SSLSocket) factory
       .createSocket(socket, sockHost, sockPort, true);
     sslsocket.setUseClientMode(true);
@@ -587,7 +575,7 @@ public class HttpResponse implements Response {
     while (readLine(in, line, true) != 0) {
 
       if (httpHeaders != null)
-        httpHeaders.append(line).append("\r\n");
+        httpHeaders.append(line).append("\n");
 
       // handle HTTP responses with missing blank line after headers
       int pos;

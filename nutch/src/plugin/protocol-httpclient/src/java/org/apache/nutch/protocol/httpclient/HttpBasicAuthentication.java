@@ -51,7 +51,6 @@ public class HttpBasicAuthentication implements HttpAuthentication,
   private static Map<String, HttpBasicAuthentication> authMap = new TreeMap<String, HttpBasicAuthentication>();
 
   private Configuration conf = null;
-  @SuppressWarnings("unused")
   private String challenge = null;
   private ArrayList<String> credentials = null;
   private String realm = null;

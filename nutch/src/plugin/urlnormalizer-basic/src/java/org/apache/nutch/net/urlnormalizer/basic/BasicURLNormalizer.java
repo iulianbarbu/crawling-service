@@ -279,7 +279,7 @@ public class BasicURLNormalizer extends Configured implements URLNormalizer {
 
       if (letter < 128 && unescapedCharacters[letter]) {
         // character should be unescaped in URLs
-        sb.append(Character.valueOf((char)letter));
+        sb.append(new Character((char)letter));
       } else {
         // Append the encoded character as uppercase
         sb.append(matcher.group().toUpperCase(Locale.ROOT));

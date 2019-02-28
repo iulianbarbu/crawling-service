@@ -65,6 +65,8 @@ public class ProtocolStatusStatistics extends Configured implements Tool {
 
   private static final Text UNFETCHED_TEXT = new Text("UNFETCHED");
 
+  public static Configuration conf;
+
   public int run(String[] args) throws Exception {
     if (args.length < 2) {
       System.err.println("Usage: ProtocolStatistics inputDirs outDir [numOfReducer]");
@@ -92,7 +94,7 @@ public class ProtocolStatusStatistics extends Configured implements Tool {
 
     String jobName = "ProtocolStatistics";
 
-    Configuration conf = getConf();
+    conf = getConf();
     conf.setBoolean("mapreduce.fileoutputcommitter.marksuccessfuljobs", false);
 
     Job job = Job.getInstance(conf, jobName);

@@ -1,16 +1,5 @@
 # Nutch Change Log
 
-Nutch 1.16 Release (dd/mm/yyyy)
-
-Comments
-
-Breaking Changes
-
-The value of crawl.gen.delay is now read in milliseconds as stated in the description
-in nutch-default.xml. Previously, the value has been read in days, see NUTCH-1842 for
-further information.
-
-
 Nutch 1.15 Release (25/07/2018)
 Release Report: https://s.apache.org/nczS
 

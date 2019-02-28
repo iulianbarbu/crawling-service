@@ -16,6 +16,8 @@
  */
 package org.apache.nutch.net.urlnormalizer.slash;
 
+import java.net.MalformedURLException;
+
 import org.apache.hadoop.conf.Configuration;
 import org.apache.nutch.net.URLNormalizers;
 import org.apache.nutch.util.NutchConfiguration;

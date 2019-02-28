@@ -69,7 +69,6 @@ public class ContentAsTextInputFormat extends
 
     }
 
-    @SuppressWarnings("unused")
     public synchronized boolean next(Text key, Text value) 
         throws IOException, InterruptedException {
 

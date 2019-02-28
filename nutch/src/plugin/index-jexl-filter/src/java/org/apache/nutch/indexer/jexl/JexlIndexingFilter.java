@@ -18,7 +18,6 @@
 package org.apache.nutch.indexer.jexl;
 
 import java.lang.invoke.MethodHandles;
-import java.util.List;
 import java.util.Map.Entry;
 
 import org.apache.commons.jexl2.Expression;
@@ -42,6 +41,7 @@ import org.slf4j.LoggerFactory;
 /**
  * An {@link org.apache.nutch.indexer.IndexingFilter} that allows filtering of
  * documents based on a JEXL expression.
+ *
  */
 public class JexlIndexingFilter implements IndexingFilter {
 
@@ -61,7 +61,7 @@ public class JexlIndexingFilter implements IndexingFilter {
     jcontext.set("fetchTime", (long) (datum.getFetchTime()));
     jcontext.set("modifiedTime", (long) (datum.getModifiedTime()));
     jcontext.set("retries", datum.getRetriesSinceFetch());
-    jcontext.set("interval", Integer.valueOf(datum.getFetchInterval()));
+    jcontext.set("interval", new Integer(datum.getFetchInterval()));
     jcontext.set("score", datum.getScore());
     jcontext.set("signature", StringUtil.toHexString(datum.getSignature()));
     jcontext.set("url", url.toString());
@@ -84,12 +84,9 @@ public class JexlIndexingFilter implements IndexingFilter {
         metadataToContext(parse.getData().getParseMeta()));
 
     JexlContext context = new MapContext();
-
     for (Entry<String, NutchField> entry : doc) {
-      List<Object> values = entry.getValue().getValues();
-      context.set(entry.getKey(), values.size() > 1 ? values : values.get(0));
+      context.set(entry.getKey(), entry.getValue().getValues());
     }
-
     jcontext.set("doc", context);
 
     try {
@@ -105,21 +102,16 @@ public class JexlIndexingFilter implements IndexingFilter {
   @Override
   public void setConf(Configuration conf) {
     this.conf = conf;
-    String strExpr = conf.get("index.jexl.filter");
-
-    if (strExpr == null) {
-      LOG.error(
+    String str = conf.get("index.jexl.filter");
+    if (str == null) {
+      LOG.warn(
           "The property index.jexl.filter must have a value when index-jexl-filter is used. You can use 'true' or 'false' to index all/none");
-
       throw new RuntimeException(
           "The property index.jexl.filter must have a value when index-jexl-filter is used. You can use 'true' or 'false' to index all/none");
     }
-
-    expr = JexlUtil.parseExpression(strExpr);
-
+    expr = JexlUtil.parseExpression(str);
     if (expr == null) {
-      LOG.error("Failed parsing JEXL from index.jexl.filter: {}", strExpr);
-
+      LOG.warn("Failed parsing JEXL from index.jexl.filter: {}", str);
       throw new RuntimeException("Failed parsing JEXL from index.jexl.filter");
     }
   }
@@ -131,12 +123,9 @@ public class JexlIndexingFilter implements IndexingFilter {
 
   private JexlContext metadataToContext(Metadata metadata) {
     JexlContext context = new MapContext();
-
     for (String name : metadata.names()) {
-      String[] values = metadata.getValues(name);
-      context.set(name, values.length > 1 ? values : values[0]);
+      context.set(name, metadata.getValues(name));
     }
-
     return context;
   }
 }

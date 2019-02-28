@@ -120,6 +120,8 @@ public class IndexingJob extends NutchTool implements Tool {
         LOG.info("Indexer: adding binary content");
       }
     }
+    IndexWriters writers = IndexWriters.get(conf);
+    LOG.info(writers.describe());
 
     IndexerMapReduce.initMRJob(crawlDb, linkDb, segments, job, addBinaryContent);
 
@@ -172,6 +174,8 @@ public class IndexingJob extends NutchTool implements Tool {
       System.err
       //.println("Usage: Indexer <crawldb> [-linkdb <linkdb>] [-params k1=v1&k2=v2...] (<segment> ... | -dir <segments>) [-noCommit] [-deleteGone] [-filter] [-normalize]");
       .println("Usage: Indexer <crawldb> [-linkdb <linkdb>] [-params k1=v1&k2=v2...] (<segment> ... | -dir <segments>) [-noCommit] [-deleteGone] [-filter] [-normalize] [-addBinaryContent] [-base64]");
+      IndexWriters writers = IndexWriters.get(getConf());
+      System.err.println(writers.describe());
       return -1;
     }
 

@@ -24,7 +24,6 @@ import java.util.List;
 class RabbitDocument {
   private List<RabbitDocumentField> fields;
 
-  @SuppressWarnings("unused")
   private float documentBoost;
 
   RabbitDocument() {
@@ -50,7 +49,6 @@ class RabbitDocument {
 
   static class RabbitDocumentField {
     private String key;
-    @SuppressWarnings("unused")
     private float weight;
     private List<Object> values;
 

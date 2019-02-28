@@ -172,6 +172,7 @@ public class Model {
     String[] ngramStr = conf.getStrings("scoring.similarity.ngrams", "1,1");
     //mingram
     ngramArr[0] = Integer.parseInt(ngramStr[0]);
+    int maxgram;
     if (ngramStr.length > 1) {
       //maxgram
       ngramArr[1] = Integer.parseInt(ngramStr[1]);

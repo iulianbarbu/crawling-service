@@ -22,7 +22,6 @@ package org.apache.nutch.protocol.ftp;
  */
 public class FtpError extends FtpException {
 
-  @SuppressWarnings("unused")
   private int code;
 
   public int getCode(int code) {

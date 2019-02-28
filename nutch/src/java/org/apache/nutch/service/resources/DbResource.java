@@ -111,7 +111,6 @@ public class DbResource extends AbstractResource {
 
   @Produces(MediaType.APPLICATION_OCTET_STREAM)
   private Response crawlDbDump(Configuration conf, Map<String, String> args, String crawlId){
-    @SuppressWarnings("resource")
     CrawlDbReader dbr = new CrawlDbReader();
     try{
       return Response.ok(dbr.query(args, conf, "dump", crawlId), MediaType.APPLICATION_OCTET_STREAM).build();
@@ -123,7 +122,6 @@ public class DbResource extends AbstractResource {
 
   @Produces(MediaType.APPLICATION_OCTET_STREAM)
   private Response crawlDbTopN(Configuration conf, Map<String, String> args, String crawlId) {
-    @SuppressWarnings("resource")
     CrawlDbReader dbr = new CrawlDbReader();
     try{
       return Response.ok(dbr.query(args, conf, "topN", crawlId), MediaType.APPLICATION_OCTET_STREAM).build();
@@ -134,7 +132,6 @@ public class DbResource extends AbstractResource {
   }
 
   private Response crawlDbUrl(Configuration conf, Map<String, String> args, String crawlId){
-    @SuppressWarnings("resource")
     CrawlDbReader dbr = new CrawlDbReader();
     try{
       return Response.ok(dbr.query(args, conf, "url", crawlId)).build();

@@ -69,14 +69,6 @@ public abstract class RegexURLFilterBase implements URLFilter {
   private Configuration conf;
 
   /**
-   * Whether there are host- or domain-specific rules. If there are no specific
-   * rules host and domain name are not extracted from the URL to speed up the
-   * matching. {@link #readRules(Reader)} automatically sets this to true if
-   * host- or domain-specific rules are used in the rule file.
-   */
-  protected boolean hasHostDomainRules = false;
-
-  /**
    * Constructs a new empty RegexURLFilterBase
    */
   public RegexURLFilterBase() {
@@ -162,33 +154,34 @@ public abstract class RegexURLFilterBase implements URLFilter {
 
   // Inherited Javadoc
   public String filter(String url) {
-    String host = null;
+    String host = URLUtil.getHost(url);
     String domain = null;
-
-    if (hasHostDomainRules) {
-      host = URLUtil.getHost(url);
-      try {
-        domain = URLUtil.getDomainName(url);
-      } catch (MalformedURLException e) {
-        // shouldnt happen here right?
-      }
-
-      LOG.debug("URL belongs to host {} and domain {}", host, domain);
+    
+    try {
+      domain = URLUtil.getDomainName(url);
+    } catch (MalformedURLException e) {
+      // shouldnt happen here right?
     }
     
+    if (LOG.isDebugEnabled()) {
+      LOG.debug("URL belongs to host " + host + " and domain " + domain);
+    }
+
     for (RegexRule rule : rules) {
       // Skip the skip for rules that don't share the same host and domain
       if (rule.hostOrDomain() != null &&
             !rule.hostOrDomain().equals(host) &&
             !rule.hostOrDomain().equals(domain)) {
-        LOG.debug("Skipping rule [{}] for host: {}", rule.regex(),
-            rule.hostOrDomain());
+        if (LOG.isDebugEnabled()) {
+          LOG.debug("Skipping rule [" + rule.regex() + "] for host: " + rule.hostOrDomain());
+        }
 
         continue;
       }
     
-      LOG.debug("Applying rule [{}] for host {} and domain {}", rule.regex(),
-          host, domain);
+      if (LOG.isDebugEnabled()) {
+        LOG.debug("Applying rule [" + rule.regex() + "] for host: " + host + " and domain " + domain);
+      }
 
       if (rule.match(url)) {
         return rule.accept() ? url : null;
@@ -272,7 +265,6 @@ public abstract class RegexURLFilterBase implements URLFilter {
         continue;
       case '>':
         hostOrDomain = line.substring(1).trim();
-        hasHostDomainRules = true;
         continue;
       case '<':
         hostOrDomain = null;

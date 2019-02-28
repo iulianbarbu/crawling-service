@@ -344,7 +344,6 @@ public class HtmlParser implements Parser {
     String url = "file:" + name;
     File file = new File(name);
     byte[] bytes = new byte[(int) file.length()];
-    @SuppressWarnings("resource")
     DataInputStream in = new DataInputStream(new FileInputStream(file));
     in.readFully(bytes);
     Configuration conf = NutchConfiguration.create();

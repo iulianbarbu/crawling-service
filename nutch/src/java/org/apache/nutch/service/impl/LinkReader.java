@@ -60,6 +60,7 @@ public class LinkReader implements NutchReader{
       throw new FileNotFoundException();
 
     }catch (IOException e) {
+      // TODO Auto-generated catch block
       e.printStackTrace();
       LOG.error("Error occurred while reading file {} : ", file, StringUtils.stringifyException(e));
       throw new WebApplicationException();
@@ -92,6 +93,7 @@ public class LinkReader implements NutchReader{
       throw new FileNotFoundException();
 
     }catch (IOException e) {
+      // TODO Auto-generated catch block
       e.printStackTrace();
       LOG.error("Error occurred while reading file {} : ", file, StringUtils.stringifyException(e));
       throw new WebApplicationException();
@@ -126,6 +128,7 @@ public class LinkReader implements NutchReader{
       throw new FileNotFoundException();
 
     }catch (IOException e) {
+      // TODO Auto-generated catch block
       e.printStackTrace();
       LOG.error("Error occurred while reading file {} : ", file, StringUtils.stringifyException(e));
       throw new WebApplicationException();
@@ -151,6 +154,7 @@ public class LinkReader implements NutchReader{
     } catch(FileNotFoundException fne){ 
       throw new FileNotFoundException();
     }catch (IOException e) {
+      // TODO Auto-generated catch block
       LOG.error("Error occurred while reading file {} : ", file, StringUtils.stringifyException(e));
       throw new WebApplicationException();
     } 
@@ -158,14 +162,14 @@ public class LinkReader implements NutchReader{
   }
 
   private HashMap<String, String> getLinksRow(Writable key, LinkDatum value) {
-    HashMap<String, String> tRow = new HashMap<>();
-    tRow.put("key_url", key.toString());
-    tRow.put("url", value.getUrl());
-    tRow.put("anchor", value.getAnchor());
-    tRow.put("score", String.valueOf(value.getScore()));
-    tRow.put("timestamp", String.valueOf(value.getTimestamp()));
-    tRow.put("linktype", String.valueOf(value.getLinkType()));
+    HashMap<String, String> t_row = new HashMap<>();
+    t_row.put("key_url", key.toString());
+    t_row.put("url", value.getUrl());
+    t_row.put("anchor", value.getAnchor());
+    t_row.put("score", String.valueOf(value.getScore()));
+    t_row.put("timestamp", String.valueOf(value.getTimestamp()));
+    t_row.put("linktype", String.valueOf(value.getLinkType()));
 
-    return tRow;
+    return t_row;
   }
 }

@@ -63,6 +63,8 @@ public class DomainStatistics extends Configured implements Tool {
   private static final int MODE_SUFFIX = 3;
   private static final int MODE_TLD = 4;
 
+  private int mode = 0;
+
   public int run(String[] args) throws Exception {
     if (args.length < 3) {
       System.err.println("Usage: DomainStatistics inputDirs outDir mode [numOfReducer]");

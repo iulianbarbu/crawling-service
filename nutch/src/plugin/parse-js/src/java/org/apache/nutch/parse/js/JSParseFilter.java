@@ -26,8 +26,9 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import org.apache.nutch.parse.HTMLMetaTags;
 import org.apache.nutch.parse.HtmlParseFilter;
@@ -42,14 +43,18 @@ import org.apache.nutch.parse.Parser;
 import org.apache.nutch.protocol.Content;
 import org.apache.nutch.util.NutchConfiguration;
 import org.apache.hadoop.conf.Configuration;
+import org.apache.oro.text.regex.MatchResult;
+import org.apache.oro.text.regex.Pattern;
+import org.apache.oro.text.regex.PatternCompiler;
+import org.apache.oro.text.regex.PatternMatcher;
+import org.apache.oro.text.regex.PatternMatcherInput;
+import org.apache.oro.text.regex.Perl5Compiler;
+import org.apache.oro.text.regex.Perl5Matcher;
 import org.w3c.dom.DocumentFragment;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * This class is a heuristic link extractor for JavaScript files and code
@@ -64,20 +69,6 @@ public class JSParseFilter implements HtmlParseFilter, Parser {
 
   private Configuration conf;
 
-  /**
-   * Scan the JavaScript fragments of a HTML page looking for possible {@link Outlink}'s
-   * 
-   * @param content
-   *          page content
-   * @param parseResult
-   *          parsed content, result of running the HTML parser
-   * @param metaTags
-   *          within the {@link HTMLMetaTags}
-   * @param doc
-   *          The {@link DocumentFragment} object
-   * @return parse the actual {@link ParseResult} object with additional outlinks from JavaScript
-   */
-  @Override
   public ParseResult filter(Content content, ParseResult parseResult,
       HTMLMetaTags metaTags, DocumentFragment doc) {
 
@@ -163,15 +154,13 @@ public class JSParseFilter implements HtmlParseFilter, Parser {
     }
   }
 
-  /**
-   * Parse a JavaScript file and extract outlinks
-   * 
-   * @param c
-   *          page content
-   * @return parse the actual {@link Parse} object
-   */
-  @Override
   public ParseResult getParse(Content c) {
+    String type = c.getContentType();
+    if (type != null && !type.trim().equals("")
+        && !type.toLowerCase().startsWith("application/x-javascript"))
+      return new ParseStatus(ParseStatus.FAILED_INVALID_FORMAT,
+          "Content not JavaScript: '" + type + "'").getEmptyParseResult(
+          c.getUrl(), getConf());
     String script = new String(c.getContent());
     Outlink[] outlinks = getJSLinks(script, "", c.getUrl());
     if (outlinks == null)
@@ -192,13 +181,9 @@ public class JSParseFilter implements HtmlParseFilter, Parser {
     return ParseResult.createParseResult(c.getUrl(), new ParseImpl(script, pd));
   }
 
-  private static final Pattern STRING_PATTERN = Pattern.compile(
-      "(\\\\*(?:\"|\'))([^\\s\"\']+?)(?:\\1)",
-      Pattern.CASE_INSENSITIVE | Pattern.MULTILINE);
+  private static final String STRING_PATTERN = "(\\\\*(?:\"|\'))([^\\s\"\']+?)(?:\\1)";
   // A simple pattern. This allows also invalid URL characters.
-  private static final Pattern URI_PATTERN = Pattern.compile(
-      "(^|\\s*?)/?\\S+?[/\\.]\\S+($|\\s*)",
-      Pattern.CASE_INSENSITIVE | Pattern.MULTILINE);
+  private static final String URI_PATTERN = "(^|\\s*?)/?\\S+?[/\\.]\\S+($|\\s*)";
 
   // Alternative pattern, which limits valid url characters.
   // private static final String URI_PATTERN =
@@ -216,20 +201,34 @@ public class JSParseFilter implements HtmlParseFilter, Parser {
       baseURL = new URL(base);
     } catch (Exception e) {
       if (LOG.isErrorEnabled()) {
-        LOG.error("error assigning base URL", e);
+        LOG.error("getJSLinks", e);
       }
     }
 
     try {
+      final PatternCompiler cp = new Perl5Compiler();
+      final Pattern pattern = cp.compile(STRING_PATTERN,
+          Perl5Compiler.CASE_INSENSITIVE_MASK | Perl5Compiler.READ_ONLY_MASK
+              | Perl5Compiler.MULTILINE_MASK);
+      final Pattern pattern1 = cp.compile(URI_PATTERN,
+          Perl5Compiler.CASE_INSENSITIVE_MASK | Perl5Compiler.READ_ONLY_MASK
+              | Perl5Compiler.MULTILINE_MASK);
+      final PatternMatcher matcher = new Perl5Matcher();
 
-      Matcher matcher = STRING_PATTERN.matcher(plainText);
+      final PatternMatcher matcher1 = new Perl5Matcher();
+      final PatternMatcherInput input = new PatternMatcherInput(plainText);
 
+      MatchResult result;
       String url;
 
-      while (matcher.find()) {
-        url = matcher.group(2);
-        Matcher matcherUri = URI_PATTERN.matcher(url);
-        if (!matcherUri.matches()) {
+      // loop the matches
+      while (matcher.contains(input, pattern)) {
+        result = matcher.getMatch();
+        url = result.group(2);
+        PatternMatcherInput input1 = new PatternMatcherInput(url);
+        if (!matcher1.matches(input1, pattern1)) {
+          // if (LOG.isTraceEnabled()) { LOG.trace(" - invalid '" + url + "'");
+          // }
           continue;
         }
         if (url.startsWith("www.")) {
@@ -257,7 +256,7 @@ public class JSParseFilter implements HtmlParseFilter, Parser {
       // if it is a malformed URL we just throw it away and continue with
       // extraction.
       if (LOG.isErrorEnabled()) {
-        LOG.error(" - invalid or malformed URL", ex);
+        LOG.error("getJSLinks", ex);
       }
     }
 
@@ -265,7 +264,7 @@ public class JSParseFilter implements HtmlParseFilter, Parser {
 
     // create array of the Outlinks
     if (outlinks != null && outlinks.size() > 0) {
-      retval = outlinks.toArray(new Outlink[0]);
+      retval = (Outlink[]) outlinks.toArray(new Outlink[0]);
     } else {
       retval = new Outlink[0];
     }
@@ -273,14 +272,6 @@ public class JSParseFilter implements HtmlParseFilter, Parser {
     return retval;
   }
 
-  /**
-   * Main method which can be run from command line with the plugin option. The
-   * method takes two arguments e.g. o.a.n.parse.js.JSParseFilter file.js
-   * baseURL
-   * 
-   * @param args
-   * @throws Exception
-   */
   public static void main(String[] args) throws Exception {
     if (args.length < 2) {
       System.err.println(JSParseFilter.class.getName() + " file.js baseURL");

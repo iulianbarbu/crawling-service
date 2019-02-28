@@ -421,16 +421,16 @@ public class SegmentReader extends Configured implements Tool {
     Class<?> valueClass = readers[0].getValueClass();
     if (!keyClass.getName().equals("org.apache.hadoop.io.Text"))
       throw new IOException("Incompatible key (" + keyClass.getName() + ")");
-    Writable value = (Writable) valueClass.getConstructor().newInstance();
+    Writable value = (Writable) valueClass.newInstance();
     // we don't know the partitioning schema
     for (int i = 0; i < readers.length; i++) {
       if (readers[i].get(key, value) != null) {
         res.add(value);
-        value = (Writable) valueClass.getConstructor().newInstance();
-        Text aKey = (Text) keyClass.getConstructor().newInstance();
+        value = (Writable) valueClass.newInstance();
+        Text aKey = (Text) keyClass.newInstance();
         while (readers[i].next(aKey, value) && aKey.equals(key)) {
           res.add(value);
-          value = (Writable) valueClass.getConstructor().newInstance();
+          value = (Writable) valueClass.newInstance();
         }
       }
       readers[i].close();
@@ -446,13 +446,13 @@ public class SegmentReader extends Configured implements Tool {
     Class<?> valueClass = readers[0].getValueClass();
     if (!keyClass.getName().equals("org.apache.hadoop.io.Text"))
       throw new IOException("Incompatible key (" + keyClass.getName() + ")");
-    WritableComparable<?> aKey = (WritableComparable<?>) keyClass.getConstructor().newInstance();
-    Writable value = (Writable) valueClass.getConstructor().newInstance();
+    WritableComparable<?> aKey = (WritableComparable<?>) keyClass.newInstance();
+    Writable value = (Writable) valueClass.newInstance();
     for (int i = 0; i < readers.length; i++) {
       while (readers[i].next(aKey, value)) {
         if (aKey.equals(key)) {
           res.add(value);
-          value = (Writable) valueClass.getConstructor().newInstance();
+          value = (Writable) valueClass.newInstance();
         }
       }
       readers[i].close();

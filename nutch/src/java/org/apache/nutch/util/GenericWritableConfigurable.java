@@ -46,7 +46,7 @@ public abstract class GenericWritableConfigurable extends GenericWritable
     byte type = in.readByte();
     Class<?> clazz = getTypes()[type];
     try {
-      set((Writable) clazz.getConstructor().newInstance());
+      set((Writable) clazz.newInstance());
     } catch (Exception e) {
       e.printStackTrace();
       throw new IOException("Cannot initialize the class: " + clazz);

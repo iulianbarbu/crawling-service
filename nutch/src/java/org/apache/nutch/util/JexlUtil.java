@@ -29,47 +29,45 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Utility methods for handling JEXL expressions
+ * A collection of Jexl utilit(y|ies).
  */
 public class JexlUtil {
 
   private static final Logger LOG = LoggerFactory
       .getLogger(MethodHandles.lookup().lookupClass());
 
-  /** Supported format for date parsing yyyy-MM-ddTHH:mm:ssZ */
-  private static final Pattern DATE_PATTERN = Pattern.compile("\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z");
+  /**
+   * 
+   */
+  public static Pattern datePattern = Pattern.compile("\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z");
 
   /**
-   * Parses the given expression to a JEXL expression. This supports
+   * Parses the given experssion to a Jexl expression. This supports
    * date parsing.
    *
-   * @param expr string JEXL expression
-   * @return parsed JEXL expression or null in case of parse error
+   * @param expr the Jexl expression
+   * @return parsed Jexl expression or null in case of parse error
    */
   public static Expression parseExpression(String expr) {
     if (expr == null) return null;
     
     try {
-      // Translate any date object into a long. Dates must be in the DATE_PATTERN
-      // format. For example: 2016-03-20T00:00:00Z
-      Matcher matcher = DATE_PATTERN.matcher(expr);
-
+      // Translate any date object into a long, dates must be specified as 20-03-2016T00:00:00Z
+      Matcher matcher = datePattern.matcher(expr);
       if (matcher.find()) {
         String date = matcher.group();
         
-        // parse the matched substring and get the epoch
+        // Parse the thing and get epoch!
         Date parsedDate = DateUtils.parseDateStrictly(date, new String[] {"yyyy-MM-dd'T'HH:mm:ss'Z'"});
         long time = parsedDate.getTime();
         
-        // replace the original string date with the numeric value
+        // Replace in the original expression
         expr = expr.replace(date, Long.toString(time));
       }
-
+      
       JexlEngine jexl = new JexlEngine();
-
       jexl.setSilent(true);
       jexl.setStrict(true);
-
       return jexl.createExpression(expr);
     } catch (Exception e) {
       LOG.error(e.getMessage());

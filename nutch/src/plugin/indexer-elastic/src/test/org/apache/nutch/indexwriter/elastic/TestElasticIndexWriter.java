@@ -136,7 +136,6 @@ public class TestElasticIndexWriter {
   public void testBulkMaxDocs() throws IOException {
     int numDocs = 10;
     conf.setInt(ElasticConstants.MAX_BULK_DOCS, numDocs);
-    @SuppressWarnings("unused")
     Job job = Job.getInstance(conf);
 
     Map<String, String> parameters = new HashMap<>();
@@ -176,7 +175,6 @@ public class TestElasticIndexWriter {
     int numDocs = testMaxBulkLength / (key.length() + value.length());
 
     conf.setInt(ElasticConstants.MAX_BULK_LENGTH, testMaxBulkLength);
-    @SuppressWarnings("unused")
     Job job = Job.getInstance(conf);
 
     Map<String, String> parameters = new HashMap<>();
@@ -209,7 +207,6 @@ public class TestElasticIndexWriter {
     int numDocs = 10;
     conf.setInt(ElasticConstants.MAX_BULK_DOCS, numDocs);
 
-    @SuppressWarnings("unused")
     Job job = Job.getInstance(conf);
 
     Map<String, String> parameters = new HashMap<>();

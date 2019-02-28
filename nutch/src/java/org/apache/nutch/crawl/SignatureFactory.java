@@ -51,7 +51,7 @@ public class SignatureFactory {
           LOG.info("Using Signature impl: " + clazz);
         }
         Class<?> implClass = Class.forName(clazz);
-        impl = (Signature) implClass.getConstructor().newInstance();
+        impl = (Signature) implClass.newInstance();
         impl.setConf(conf);
         objectCache.setObject(clazz, impl);
       } catch (Exception e) {

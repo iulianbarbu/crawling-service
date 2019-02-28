@@ -55,6 +55,7 @@ public class RegexParseFilter implements HtmlParseFilter {
   private String regexFile = null;
   
   private Configuration conf;
+  private DocumentFragment doc;
   
   private static final Map<String,RegexRule> rules = new HashMap<>();
   

@@ -182,7 +182,6 @@ public class Ftp implements Protocol {
   public static void main(String[] args) throws Exception {
     int timeout = Integer.MIN_VALUE;
     int maxContentLength = Integer.MIN_VALUE;
-    @SuppressWarnings("unused")
     String logLevel = "info";
     boolean followTalk = false;
     boolean keepConnection = false;
