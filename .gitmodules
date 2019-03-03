@@ -1,0 +1,3 @@
+[submodule "nutch"]
+	path = nutch
+	url = https://github.com/hasoj/nutch.git
