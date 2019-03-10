@@ -1,6 +1,7 @@
 import java.io.File;
 import java.io.IOException;
 
+import org.openqa.selenium.By;
 import org.openqa.selenium.firefox.FirefoxBinary;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxOptions;
@@ -36,9 +37,12 @@ public class Selenium3Demo {
 		FirefoxOptions options = new FirefoxOptions().setBinary(firefoxBinary).setProfile(profile).setAcceptInsecureCerts(true);
 
 		FirefoxDriver driver = new FirefoxDriver(options);
-		driver.get("https://www.google.com");
+		driver.get("https://firefox-source-docs.mozilla.org/testing/geckodriver/geckodriver/Support.html");
 
 		System.out.println("Life Title -> " + driver.getTitle());
+
+		String innerHtml = driver.findElement(By.tagName("body")).getAttribute("innerHTML");
+		System.out.println(innerHtml);
 		driver.close();
 		service.stop();
 	}

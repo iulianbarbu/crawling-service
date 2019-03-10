@@ -1,9 +1,10 @@
 #!/bin/bash
 
-export NUTCH_HOME=/opt/nutch
-export SOLR_INSTALLATION=/opt/solr
-export HBASE_HOME=/opt/hbase
-export PATH=$PATH:$NUTCH_RUNTIME_HOME/bin:$SOLR_INSTALLATION/bin:$HBASE_HOME/bin
+export NUTCH_HOME=/home/iulian/Licenta/nutch
+export NUTCH_RUNTIME_HOME=$NUTCH_HOME/runtime/local
+export SOLR_HOME=/home/iulian/Licenta/solr-7.3.1/server/solr
+export SOLR_INSTALLATION_HOME=$SOLR_HOME/../../
+export PATH=$PATH:$NUTCH_RUNTIME_HOME/bin:$SOLR_INSTALLATION_HOME/bin
 
 export ORIG_PATH=$PATH
 
