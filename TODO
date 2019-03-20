@@ -1,0 +1,28 @@
+// DONE: crawl + fetch (selenium) + index (solr)
+// TODO: solr schema manipulation configuration wise
+// TODO: distributed crawl
+// TODO: distributed fetch (using selenium grid)
+// TODO: distributed indexing (using solr cloud configuration)
+
+// INTRODUCERE
+- care este motivatia pt. proiect?
+- care este obiectivul?
+
+// RELATED WORK
+- cine se ocupa de lucruri similare?
+- ce fac acele lucruri?
+- in final, eu nu repet o chestie existenta (fie fac o chestie mai rapida, nu costa bani, este customizabila, favorizeaza un anumit grup de utilizatori)
+
+// SPECIFICATII de proiectare
+- eu sunt beneficiarul (nu sunt specialist, vreau sa scot la licitatie ca cineva sa imi faca un produs, eu ii spun ce vreau, cerintele)
+
+// ARHITECTURA SISTEMULUI
+- ca sa implementez aceste cerinte, imi trebuie modulul asta asta si asta, ce face in mare fiecare modul, relatia dintre ele
+
+// IMPLEMENTARE
+- pun in evidenta ce am facut.
+
+// EVALUARE
+- un demo
+// CONCLUZIE
+// BIBLIOGRAFIE
