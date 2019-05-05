@@ -4,6 +4,9 @@
 // TODO: distributed fetch (using selenium grid)
 // TODO: distributed indexing (using solr cloud configuration)
 
+// !!!! MAKE SURE THAT SOLR SCHEMA IS ADAPTED (YOU IDIOT DELETED ALL OF YOUR HARD WORK)
+
+
 // INTRODUCERE
 - care este motivatia pt. proiect?
 - care este obiectivul?
