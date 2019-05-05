@@ -2,3 +2,5 @@ firefox-*
 solr-*
 nutch-orig
 hadoop
+*.tar.gz
+*javadoc*
