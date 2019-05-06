@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
+
+<configuration>
+	<property>
+		<name>plugins.folder</name>
+		<value>/root/nutch/build/</value>
+	</property>
+	<property>
+    	<name>plugin.includes</name>
+    	<value>protocol-selenium|urlfilter-regex|parse-(html|tika)|index-(basic|anchor)|urlnormalizer-(pass|regex|basic)|scoring-opic</value>
+  	</property>
+	<property>
+  		<name>selenium.driver</name>
+  		<value>firefox</value>
+	</property>
+	<property>
+  		<name>libselenium.page.load.delay</name>
+  		<value>10</value>
+	</property>
+</configuration>
