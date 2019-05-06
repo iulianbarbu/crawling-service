@@ -44,7 +44,7 @@ RUN echo "[program:sshd]" >> /etc/supervisor/supervisord.conf \
 	&& echo "command=/usr/bin/x11vnc -display $DISPLAY -bg -loop -forever -xkb -rfbauth $RFBAUTH_PASSWORD_FILE" >> /etc/supervisor/supervisord.conf
 
 # install general tools
-RUN apt-get install -y iproute2 vim git inetutils-ping netcat libtool autoconf build-essential
+RUN apt-get install -y iproute2 vim git inetutils-ping netcat libtool autoconf build-essential firefox
 
 # Clone protobuf and install it
 WORKDIR /root/
@@ -68,6 +68,7 @@ RUN $HADOOP_HOME/bin/hdfs namenode -format
 WORKDIR /root/
 ADD nutch/runtime/deploy nutch
 ENV NUTCH_HOME=/root/nutch/
+ENV PATH="${HADOOP_HOME}/bin:${PATH}"
 
 RUN apt-get clean
 

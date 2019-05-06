@@ -2,27 +2,27 @@
 <configuration>
     <property>
         <name>yarn.resourcemanager.hostname</name>
-        <value>caochong-master</value>
+        <value>hadoop-master</value>
     </property>
      <property>
          <name>yarn.resourcemanager.resource-tracker.address</name>
-         <value>caochong-master:8025</value>
+         <value>hadoop-master:8025</value>
     </property>
     <property>
          <name>yarn.resourcemanager.scheduler.address</name>
-         <value>caochong-master:8030</value>
+         <value>hadoop-master:8030</value>
     </property>
     <property>
         <name>yarn.resourcemanager.address</name>
-        <value>caochong-master:8040</value>
+        <value>hadoop-master:8040</value>
     </property>
     <property>
         <name>yarn.nodemanager.address</name>
-        <value>caochong-master:8050</value>
+        <value>hadoop-master:8050</value>
     </property>
     <property>
         <name>yarn.nodemanager.localizer.address</name>
-        <value>caochong-master:8060</value>
+        <value>hadoop-master:8060</value>
     </property>
     <property>
         <name>yarn.nodemanager.aux-services</name>
