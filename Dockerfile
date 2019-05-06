@@ -6,7 +6,7 @@ RUN apt-get update -y
 RUN apt-get upgrade -y
 
 # install openjdk
-RUN apt-get install -y openjdk-8-jdk
+RUN apt-get install -y apt-utils openjdk-8-jdk curl 
 ENV JAVA_HOME /usr/lib/jvm/java-8-openjdk-amd64
 ENV PATH $PATH:$JAVA_HOME/bin
 
@@ -44,13 +44,18 @@ RUN echo "[program:sshd]" >> /etc/supervisor/supervisord.conf \
 	&& echo "command=/usr/bin/x11vnc -display $DISPLAY -bg -loop -forever -xkb -rfbauth $RFBAUTH_PASSWORD_FILE" >> /etc/supervisor/supervisord.conf
 
 # install general tools
-RUN apt-get install -y iproute2 vim git inetutils-ping netcat libtool autoconf ldconfig build-essential
+RUN apt-get install -y iproute2 vim git inetutils-ping netcat libtool autoconf build-essential
 
 # Clone protobuf and install it
 WORKDIR /root/
 RUN git clone https://github.com/protocolbuffers/protobuf.git protobuf
 WORKDIR /root/protobuf/
-RUN git checkout tags/v2.5.0 && ./autogen.sh && ./configure.sh && make && make check && make install && ldconfig
+RUN git checkout tags/v2.5.0 
+RUN git submodule add https://github.com/google/googletest.git gtest
+WORKDIR /root/protobuf/gtest/
+RUN git checkout tags/release-1.5.0
+WORKDIR /root/protobuf/
+RUN ./autogen.sh && ./configure && make check && make install && ldconfig
 
 # Copy hadoop 2.7.4
 WORKDIR /root/
