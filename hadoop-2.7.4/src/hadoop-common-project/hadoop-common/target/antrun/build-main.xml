@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<project name="maven-antrun-" default="main"  >
+<target name="main" if="tar">
+  <echo file="/home/iulian/Licenta/hadoop-2.7.4/src/hadoop-common-project/hadoop-common/target/dist-maketar.sh">cd &quot;/home/iulian/Licenta/hadoop-2.7.4/src/hadoop-common-project/hadoop-common/target&quot;
+                      tar cf - hadoop-common-2.7.4 | gzip &gt; hadoop-common-2.7.4.tar.gz</echo>
+  <exec failonerror="true" dir="/home/iulian/Licenta/hadoop-2.7.4/src/hadoop-common-project/hadoop-common/target" executable="sh">
+    <arg line="./dist-maketar.sh"/>
+  </exec>
+</target>
+</project>
