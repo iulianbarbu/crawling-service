@@ -53,10 +53,13 @@ function create_cluster() {
 	# Copy the workers file to the master container
 	docker cp hosts $master_id:$HADOOP_HOME/etc/hadoop/workers
 	docker cp hosts $master_id:$HADOOP_HOME/etc/hadoop/slaves
+	
+	rm hosts	
 
 	# Start hdfs and yarn services
 	docker exec -it $master_id $HADOOP_HOME/sbin/start-dfs.sh
 	docker exec -it $master_id $HADOOP_HOME/sbin/start-yarn.sh
+	docker exec -it $master_id $HADOOP_HOME/sbin/mr-jobhistory-daemon.sh start historyserver
 
 	# Connect to the master node
 	docker exec -it hadoop-master /bin/bash
@@ -89,4 +92,4 @@ function parse_arguments() {
 
 parse_arguments $@
 build_hadoop
-#create_cluster
+create_cluster
