@@ -22,4 +22,9 @@
   		<name>libselenium.page.load.delay</name>
   		<value>10</value>
 	</property>
+	<property>
+		<name>webdriver.gecko.driver</name>
+		<value>/root/nutch/geckodriver</value>
+	</property>
+
 </configuration>
