@@ -4,7 +4,7 @@
 <configuration>
 	<property>
 		<name>plugins.folder</name>
-		<value>/root/nutch/build/</value>
+		<value>/home/nutch/nutch/build/</value>
 	</property>
 	<property>
 		<name>http.agent.name</name>
@@ -24,7 +24,7 @@
 	</property>
 	<property>
 		<name>webdriver.gecko.driver</name>
-		<value>/root/nutch/geckodriver</value>
+		<value>/home/nutch/nutch/geckodriver</value>
 	</property>
 
 </configuration>

@@ -6,11 +6,11 @@
 	</property>
 	<property>
 		<name>dfs.namenode.name.dir</name>
-		<value>/root/hadoop/namedir</value>
+		<value>/home/nutch/hadoop/namedir/</value>
 	</property>
 	<property>
 		<name>dfs.datanode.data.dir</name>
-		<value>/root/hadoop/datadir</value>
+		<value>/home/nutch/hadoop/datadir/</value>
 	</property>
 	<property>
 		<name>dfs.namenode.handler.count</name>
