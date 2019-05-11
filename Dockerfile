@@ -86,6 +86,7 @@ ENV NUTCH_HOME=/home/nutch/nutch/
 # Copy geckodriver
 WORKDIR /home/nutch/nutch/
 ADD geckodriver-v0.24.0-linux64/geckodriver .
+RUN sudo chmod -R 777 $NUTCH_HOME
 
 RUN sudo apt-get clean
 
