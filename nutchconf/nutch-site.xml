@@ -12,7 +12,7 @@
 	</property>
 	<property>
     	<name>plugin.includes</name>
-    	<value>protocol-selenium|urlfilter-regex|parse-(html|tika)|index-(basic|anchor)|urlnormalizer-(pass|regex|basic)|scoring-opic</value>
+    	<value>protocol-selenium|urlfilter-regex|parse-(html|tika)|index-(basic|anchor)|urlnormalizer-(pass|regex|basic)|scoring-opic|indexer-solr</value>
   	</property>
 	<property>
   		<name>selenium.driver</name>

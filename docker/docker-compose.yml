@@ -1,0 +1,14 @@
+version: '3'
+services:
+    hadoop-master:
+        build: docker/Dockerfile_hadoop
+        ports: 
+            - "22:20022"
+            - "9000:29000"
+            - "50020:25002"
+            - "50030:25003"
+            - "5900:25900"
+    solr:
+        build: docker/Dockerfile_solr
+        ports:
+            - "8983:28983"        

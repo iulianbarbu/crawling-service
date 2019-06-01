@@ -415,3 +415,4 @@ esac
 #
 # For example, to limit who can execute the namenode command,
 # export HADOOP_namenode_USER=hdfs
+export DISPLAY=:0

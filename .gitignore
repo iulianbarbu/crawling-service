@@ -1,2 +1,8 @@
 *.jar
 *.tar.gz
+hadoop-2.7.4/logs
+hadoop-2.7.4/namedir
+hadoop-2.7.4/datadir
+solr-7.3.1/bin/*.pid
+solr-7.3.1/server/logs
+solr-7.3.1/server/solr/cores/

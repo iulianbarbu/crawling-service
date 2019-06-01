@@ -12,9 +12,9 @@
 ------------------------------------------------------------------------------------------------
 
 --------------------------------------------------------------------------------------------------------------------------------------
-#Create a core with "test" name that uses configSet "nutch_configs"
+#Create a core with "test" name that uses configSet "nutch_default"
 #instanceDir must exists before calling this command  
-curl "http://localhost:8983/solr/admin/cores?action=CREATE&name=test&instanceDir=/opt/solr/example/solr/test&configSet=nutch_configs"
+curl "http://localhost:8983/solr/admin/cores?action=CREATE&name=test&instanceDir=/home/iulian/Licenta/solr-7.3.1/server/solr/cores/test&configSet=nutch_default"
 --------------------------------------------------------------------------------------------------------------------------------------
 
 --------------------------------------------------------------------------------------------
@@ -26,4 +26,14 @@ curl "http://localhost:8983/solr/admin/cores?action=UNLOAD&deleteInstanceDir=tru
 # Example of delete document by id
 curl http://localhost:8983/solr/test/update?commit=true -H "Content-Type: text/xml" --data-binary '<delete><id>org.apache.nutch:http/</id></delete>'
 -------------------------------------------------------------------------------------------------------------------------------------------------------
+
+# Distributed nutch inject
+hdfs dfs -put urls /urls
+bin/nutch inject /crawl /urls
+
+# Distributed nutch generate
+bin/nutch generate /crawl /crawl/segments
+
+# Distributed nutch fetch
+bin/nutch fetch /crawl/segments/id -threads N
 

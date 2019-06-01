@@ -1,11 +1,10 @@
 #!/usr/bin/env bash
 
-HADOOP_HOME=/root/hadoop/
+HADOOP_HOME=/home/nutch/hadoop
 
 function usage() {
-    echo "Usage: ./run.sh hadoop [--rebuild] [--nodes=N]"
+    echo "Usage: ./run.sh [--rebuild] [--nodes=N]"
     echo
-    echo "hadoop       Make running mode to hadoop"
     echo "--rebuild    Rebuild hadoop if in hadoop mode; else reuild spark"
 	echo "--nodes	   Number of nodes that will be started in this cluster."
 }
@@ -38,15 +37,16 @@ function create_cluster() {
 	fi
 
 	if [[ -z $N ]]; then
-		N=3
+		N=0
 	fi
 
 	# launch master container
-	master_id=$(docker run -d --rm --net hadoop-cluster-network --name hadoop-master hadoop-base)
+	master_id=$(docker run -d --shm-size=2g --rm --net hadoop-cluster-network --name hadoop-master hadoop-base)
 	echo ${master_id:0:12} > hosts
 	for i in $(seq $((N-1)));
 	do
-		container_id=$(docker run -d --rm --net hadoop-cluster-network hadoop-base)
+		container_id=$(docker run -d --shm-size=2g --rm --net hadoop-cluster-network hadoop-base)
+		docker exec -it $container_id sudo apt-get install firefox-esr
 		echo ${container_id:0:12} >> hosts
 	done
 
@@ -78,7 +78,8 @@ function parse_arguments() {
                 REBUILD=1
                 ;;
 			--nodes)
-				N=$VALUE
+				shift
+				N=$1
 				;;	
             *)
                 echo "ERROR: unknown parameter \"$PARAM\""

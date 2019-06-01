@@ -90,6 +90,4 @@ RUN sudo chmod -R 777 $NUTCH_HOME
 
 RUN sudo apt-get clean
 
-EXPOSE 22 9000 50020 50030 5900
-
 CMD [ "sudo", "/usr/bin/supervisord" , "-n" ]
