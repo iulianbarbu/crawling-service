@@ -6,7 +6,7 @@
   <writer id="indexer_solr_1" class="org.apache.nutch.indexwriter.solr.SolrIndexWriter">
     <parameters>
       <param name="type" value="http"/>
-      <param name="url" value="http://localhost:8983/solr/nutch_core"/>
+      <param name="url" value="http://solr-master:8983/solr/nutch_core"/>
       <param name="collection" value=""/>
       <param name="weight.field" value=""/>
       <param name="commitSize" value="1000"/>
