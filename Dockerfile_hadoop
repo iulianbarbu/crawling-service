@@ -88,7 +88,7 @@ WORKDIR /home/nutch/nutch/
 ADD geckodriver-v0.24.0-linux64/geckodriver .
 RUN sudo chmod -R 777 $NUTCH_HOME
 
-EXPOSE 22 9000 50020 50030 5900
+EXPOSE 22 9000 50020 50030 5900 8080 8081
 
 RUN sudo apt-get clean
 CMD [ "sudo", "/usr/bin/supervisord" , "-n" ]
