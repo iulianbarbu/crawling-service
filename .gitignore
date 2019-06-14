@@ -6,3 +6,4 @@ hadoop-2.7.4/datadir
 solr-7.3.1/bin/*.pid
 solr-7.3.1/server/logs
 solr-7.3.1/server/solr/cores/
+zookeeper-3.5.5/conf/zoo.cfg

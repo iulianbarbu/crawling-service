@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 HADOOP_HOME=/home/nutch/hadoop
+NUTCH_HOME=/home/nutch/nutch
 SOLR_HOME=/home/solr/solr
 ZK_CONF=/home/solr/zookeeper/conf
 ZK_HOME=/home/solr/zookeeper
@@ -141,6 +142,17 @@ function create_solr_cluster() {
 	# Start solr daemon
 	docker exec -it $master_id $SOLR_HOME/bin/solr zk upconfig -n nutch_default -d /home/solr/solr/server/solr/configsets/nutch_default -z ${containers[0]}:2181
 	docker exec -it $master_id curl "http://localhost:8983/solr/admin/collections?action=CREATE&name=nutch_collection&numShards=$SOLR_NODES&replicationFactor=$SOLR_NODES&maxShardsPerNode=$SOLR_NODES&collection.configName=nutch_default"
+
+	# Do auxiliary stuff to make solr available from nutch web interface	
+	solr_master_ip=$(docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' solr-master)
+	docker exec hadoop-master unzip $NUTCH_HOME/apache-nutch-1.15.job nutch-site.xml -d .
+	docker exec hadoop-master /bin/bash -c "cat $NUTCH_HOME/nutch-site.xml | sed 's/<value><\/value>/<value>http:\/\/$solr_master_ip:8983<\/value>/' > nutch-site-aux.xml"
+	docker exec hadoop-master rm $NUTCH_HOME/nutch-site.xml
+	docker exec hadoop-master mv $NUTCH_HOME/nutch-site-aux.xml $NUTCH_HOME/nutch-site.xml
+	docker exec hadoop-master zip $NUTCH_HOME/apache-nutch-1.15.job nutch-site.xml
+
+	docker exec hadoop-master $NUTCH_HOME/bin/nutch startserver -host $hadoop_master_ip &
+	docker exec hadoop-master $NUTCH_HOME/bin/nutch webapp &
 }
 
 function parse_arguments() {

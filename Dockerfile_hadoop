@@ -55,7 +55,7 @@ RUN echo "[program:sshd]" | sudo tee -a /etc/supervisor/supervisord.conf \
 	&& echo "command=/usr/bin/x11vnc -display $DISPLAY -bg -loop -forever -xkb -rfbauth $RFBAUTH_PASSWORD_FILE" | sudo tee -a /etc/supervisor/supervisord.conf
 
 # install general tools
-RUN sudo apt-get install -y iproute2 vim git inetutils-ping netcat libtool autoconf build-essential firefox-esr zip
+RUN sudo apt-get install -y iproute2 vim git inetutils-ping netcat libtool autoconf build-essential firefox-esr zip net-tools
 
 # Clone protobuf and install it
 WORKDIR /home/nutch/

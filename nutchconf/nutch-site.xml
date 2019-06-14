@@ -26,5 +26,8 @@
 		<name>webdriver.gecko.driver</name>
 		<value>/home/nutch/nutch/geckodriver</value>
 	</property>
-
+	<property>
+		<name>solr.server.url</name>
+		<value></value>
+	</property>
 </configuration>
