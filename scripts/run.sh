@@ -85,6 +85,8 @@ function create_hadoop_cluster() {
 	docker exec -it $master_id $HADOOP_HOME/sbin/mr-jobhistory-daemon.sh start historyserver
 	docker exec -it $master_id hdfs dfs -mkdir /solr
 	docker exec -it $master_id hdfs dfs -chown -R solr /solr
+
+		
 }
 
 function create_solr_cluster() {
@@ -150,6 +152,10 @@ function create_solr_cluster() {
 	docker exec hadoop-master rm $NUTCH_HOME/nutch-site.xml
 	docker exec hadoop-master mv $NUTCH_HOME/nutch-site-aux.xml $NUTCH_HOME/nutch-site.xml
 	docker exec hadoop-master zip $NUTCH_HOME/apache-nutch-1.15.job nutch-site.xml
+	
+	cat /etc/hosts | head -n 6 | sudo tee /etc/hosts
+	echo "hadoop-master $hadoop_master_ip" | sudo tee -a /etc/hosts
+	echo "solr-master $solr_master_ip" | sudo tee -a /etc/hosts
 
 	docker exec hadoop-master $NUTCH_HOME/bin/nutch startserver -host $hadoop_master_ip &
 	docker exec hadoop-master $NUTCH_HOME/bin/nutch webapp &
