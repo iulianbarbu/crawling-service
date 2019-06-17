@@ -6,6 +6,7 @@ SOLR_HOME=/home/solr/solr
 ZK_CONF=/home/solr/zookeeper/conf
 ZK_HOME=/home/solr/zookeeper
 ZK_DATADIR=/home/solr/zookeeper/datadir
+CRAWLING_SERVICE_ROOT=/home/iulianbarbu2/crawling-service
 
 function usage() {
     echo "Usage: ./run.sh [--rebuild] [--hnodes=N] [--snodes=N]"
@@ -20,13 +21,13 @@ function build_hadoop() {
         #rebuild the base image if not exist
         if [[ "$(docker images -q hadoop-base)" == "" ]]; then
             echo "Building Hadoop...."
-			cd /home/iulian/Licenta/
+	    cd $CRAWLING_SERVICE_ROOT
             docker build -t hadoop-base -f Dockerfile_hadoop .
         else
 			# remove the outdated image base
 			#docker rm -f $(docker rmi $(docker inspect -f='{{index .Id}}' hadoop-base | cut -d ':' -f 2)) 2>&1 > /dev/null
 			echo "Building Hadoop...."
-			cd /home/iulian/Licenta/
+			cd $CRAWLING_SERVICE_ROOT
             docker build -t hadoop-base -f Dockerfile_hadoop .
 		fi
     fi
@@ -37,12 +38,12 @@ function build_solr() {
         #rebuild the base image if not exist
         if [[ "$(docker images -q solr-base)" == "" ]]; then
             echo "Building Solr...."
-			cd /home/iulian/Licenta/
+			cd $CRAWLING_SERVICE_ROOT
             docker build -t solr-base -f Dockerfile_solr .
         else
 			# remove the outdated image base
 			echo "Building Solr...."
-			cd /home/iulian/Licenta/
+			cd $CRAWLING_SERVICE_ROOT
             docker build -t solr-base -f Dockerfile_solr .
 		fi
     fi
@@ -98,7 +99,7 @@ function create_solr_cluster() {
 
 	hadoop_master_ip=$(docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' hadoop-master)
 
-	cd /home/iulian/Licenta
+	cd $CRAWLING_SERVICE_ROOT
 	ZK_CFG="zookeeper-3.5.5/conf/zoo.cfg"
 	rm $ZK_CFG &>/dev/null
 	cp zookeeper-3.5.5/conf/zoo_sample.cfg $ZK_CFG		
@@ -193,4 +194,4 @@ parse_arguments $@
 #build_hadoop
 #build_solr
 create_hadoop_cluster
-create_solr_cluster
+#create_solr_cluster

@@ -51,7 +51,6 @@ RUN sudo apt-get install -y iproute2 vim git inetutils-ping netcat libtool autoc
 WORKDIR /home/solr/
 ADD solr-7.3.1 solr
 RUN sudo chmod -R 777 solr
-RUN sudo rm -r solr/server/solr/cores
 
 # Configure zk-node
 WORKDIR /home/solr
