@@ -66,12 +66,18 @@ function create_hadoop_cluster() {
 
 	# launch master container
 	master_id=$(docker run -d --shm-size=2g --rm --net hadoop-cluster-network --name hadoop-master hadoop-base)
+	docker exec ${master_id:0:12} /bin/bash -c "cat $HADOOP_HOME/etc/hadoop/yarn-site.xml | sed 's/localhost/${master_id:0:12}/' > $HADOOP_HOME/etc/hadoop/yarn-site-aux.xml"
+	docker exec ${master_id:0:12} rm $HADOOP_HOME/etc/hadoop/yarn-site.xml
+	docker exec ${master_id:0:12} mv $HADOOP_HOME/etc/hadoop/yarn-site-aux.xml $HADOOP_HOME/etc/hadoop/yarn-site.xml
 	echo ${master_id:0:12} > hosts
 	for i in $(seq $((HADOOP_NODES-1)));
 	do
 		container_id=$(docker run -d --shm-size=2g --rm --net hadoop-cluster-network hadoop-base)
 		echo "Started $container_id."
 		echo ${container_id:0:12} >> hosts
+		docker exec ${container_id:0:12} /bin/bash -c "cat $HADOOP_HOME/etc/hadoop/yarn-site.xml | sed 's/localhost/${container_id:0:12}/' > $HADOOP_HOME/etc/hadoop/yarn-site-aux.xml"
+		docker exec ${container_id:0:12} rm $HADOOP_HOME/etc/hadoop/yarn-site.xml
+		docker exec ${container_id:0:12} mv $HADOOP_HOME/etc/hadoop/yarn-site-aux.xml $HADOOP_HOME/etc/hadoop/yarn-site.xml
 	done
 
 	# Copy the workers file to the master container

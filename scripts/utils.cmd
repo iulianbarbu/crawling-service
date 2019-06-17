@@ -37,3 +37,6 @@ bin/nutch generate /crawl /crawl/segments
 # Distributed nutch fetch
 bin/nutch fetch /crawl/segments/id -threads N
 
+# Benchmark
+bin/nutch benchmark -depth 1 -threads 1 -seeds 6 -plugins "protocol-selenium|parse-tika|scoring-opic|urlfilter-regex|urlnormalizer-pass"
+

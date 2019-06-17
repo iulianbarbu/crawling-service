@@ -34,10 +34,10 @@
 	</property>
 	<property>
 		<name>mapreduce.map.java.opts</name>
-		<value>-Xmx512m</value>
+		<value>-Xmx2g</value>
 	</property>
 	<property>
 		<name>mapreduce.reduce.java.opts</name>
-		<value>-Xmx512m</value>
+		<value>-Xmx2g</value>
 	</property>
 </configuration>
