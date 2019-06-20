@@ -65,7 +65,7 @@ function create_hadoop_cluster() {
 	fi
 
 	# launch master container
-	master_id=$(docker run -d --shm-size=2g --rm --net hadoop-cluster-network --name hadoop-master hadoop-base)
+	master_id=$(docker run -d --shm-size=2g --rm --net hadoop-cluster-network -p 80:8080 -p 8081:8081 -p 9000:9000 -p 50020:50020 -p 50030:50030 -p 50070:50070 -p 5900:5900 --name hadoop-master hadoop-base)
 	docker exec ${master_id:0:12} /bin/bash -c "cat $HADOOP_HOME/etc/hadoop/yarn-site.xml | sed 's/localhost/${master_id:0:12}/' > $HADOOP_HOME/etc/hadoop/yarn-site-aux.xml"
 	docker exec ${master_id:0:12} rm $HADOOP_HOME/etc/hadoop/yarn-site.xml
 	docker exec ${master_id:0:12} mv $HADOOP_HOME/etc/hadoop/yarn-site-aux.xml $HADOOP_HOME/etc/hadoop/yarn-site.xml
@@ -120,7 +120,7 @@ function create_solr_cluster() {
 		SOLR_NODES=1
 	fi
 
-	master_id=$(docker run -d --shm-size=2g --rm --net hadoop-cluster-network --name solr-master solr-base)
+	master_id=$(docker run -d --shm-size=2g --rm --net hadoop-cluster-network -p 8983:8983 --name solr-master solr-base)
 	echo "server.1=${master_id:0:12}:2888:3888" >> $ZK_CFG	
 	containers[0]=${master_id:0:12}
 	ZK_HOSTS="${containers[0]}:2181"	
@@ -155,10 +155,10 @@ function create_solr_cluster() {
 	# Do auxiliary stuff to make solr available from nutch web interface	
 	solr_master_ip=$(docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' solr-master)
 	docker exec hadoop-master unzip $NUTCH_HOME/apache-nutch-1.15.job nutch-site.xml -d .
-	docker exec hadoop-master /bin/bash -c "cat $NUTCH_HOME/nutch-site.xml | sed 's/<value><\/value>/<value>http:\/\/$solr_master_ip:8983<\/value>/' > nutch-site-aux.xml"
-	docker exec hadoop-master rm $NUTCH_HOME/nutch-site.xml
+	docker exec hadoop-master /bin/bash -c "cat $NUTCH_HOME/nutch-site.xml | sed 's/<value><\/value>/<value>http:\/\/35.188.183.110:8983<\/value>/' > nutch-site-aux.xml"
 	docker exec hadoop-master mv $NUTCH_HOME/nutch-site-aux.xml $NUTCH_HOME/nutch-site.xml
 	docker exec hadoop-master zip $NUTCH_HOME/apache-nutch-1.15.job nutch-site.xml
+	docker exec hadoop-master rm $NUTCH_HOME/nutch-site.xml
 	
 	cat /etc/hosts | head -n 6 | sudo tee /etc/hosts
 	echo "hadoop-master $hadoop_master_ip" | sudo tee -a /etc/hosts
@@ -197,7 +197,8 @@ function parse_arguments() {
 }
 
 parse_arguments $@
-#build_hadoop
+build_hadoop
 #build_solr
-create_hadoop_cluster
+#create_hadoop_cluster
 #create_solr_cluster
+
