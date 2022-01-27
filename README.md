@@ -1,4 +1,7 @@
-# crawling-service
+#  **THIS PROJECT IS PARKED** 
+
+## crawling-service
+
 This is my diploma project, which is intended to be a service for crawling,
 parsing and indexing content from internet, based on Apache Nutch.
 
